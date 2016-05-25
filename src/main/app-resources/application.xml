@@ -5,12 +5,12 @@
       <streamingExecutable>/application/node/run</streamingExecutable>
     </jobTemplate>
   </jobTemplates>
-    <workflow id="workflow" title="Basic Workflow" abstract="Basic workflow archetype">
+    <workflow id="workflow" title="EW and Up component extraction" abstract="Sample service to combine the Asc and Desc measurement to extract the EW and Up component of Displacement.">
     <workflowVersion>1.0</workflowVersion>
     <node id="node">
       <job id="template"/>
       <sources>
-        <source refid="string:list">input-1,input-2</source>
+        <source refid="string:list">file:///application/data/asc_T365.zip,file:///application/data/asc_T408.zip,file:///application/data/desc_T200.zip,file:///application/data/desc_T472.zip</source>
       </sources>
     </node>
   </workflow>

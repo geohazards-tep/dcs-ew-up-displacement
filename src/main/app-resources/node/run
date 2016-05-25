@@ -3,11 +3,21 @@
 # source the ciop functions (e.g. ciop-log, ciop-getparam)
 source ${ciop_job_include}
 
+# source node functions
+source ${_CIOP_APPLICATION_PATH}/node/lib/functions.sh
+
+export target=${TMPDIR}/input
+mkdir -p ${target}
+
 # Loops over all the inputs
 while read inputfile 
 do
   # report activity in log
-  ciop-log "INFO" "The input file is: $inputfile"
+  ciop-log "INFO" "The input file is: ${inputfile}"
+
+  get_data ${inputfile} ${target} || exit $?
 done
+
+main || exit $?
 
 exit 0
