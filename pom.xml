@@ -70,6 +70,27 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-sav-resources</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>/application/node/libexec</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/main/app-resources/</directory>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}${basedir}/idl</directory>
+ <includes>
+                <include>**/*.sav</include>
+              </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
