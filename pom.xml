@@ -56,8 +56,8 @@
         <version>2.6</version>
         <executions>
           <execution>
-            <id>copy-app-resources</id>
-            <phase>install</phase>
+            <id>copy-app-resources2</id>
+            <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -65,28 +65,25 @@
               <outputDirectory>/application</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${basedir}/src/main/app-resources/</directory>
+                  <directory>${project.build.directory}/application</directory>
+                  <excludes>
+                    <exclude>**/*.pro</exclude>
+                  </excludes>
                 </resource>
               </resources>
             </configuration>
           </execution>
           <execution>
-            <id>copy-sav-resources</id>
-            <phase>install</phase>
+            <id>copy-app-resources</id>
+            <phase>validate</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>/application/node/libexec</outputDirectory>
+              <outputDirectory>${project.build.directory}/application</outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/src/main/app-resources/</directory>
-                </resource>
-                <resource>
-                  <directory>${project.build.directory}${basedir}/idl</directory>
- <includes>
-                <include>**/*.sav</include>
-              </includes>
                 </resource>
               </resources>
             </configuration>
@@ -133,22 +130,6 @@
               </resources>
             </configuration>
           </execution>
-<execution>
-            <id>copy-idl-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-             <outputDirectory>${project.build.directory}/idl</outputDirectory>-->
-              <resources>
-                <resource>
-                  <directory>${basedir}/src/main/app-resources/node/libexec</directory>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -164,7 +145,7 @@
             </goals>
             <configuration>
               <executable>idl</executable>
-              <workingDirectory>${project.build.directory}/idl</workingDirectory>
+              <workingDirectory>${project.build.directory}/application/node/idl</workingDirectory>
               <environmentVariables>
                 <LM_LICENSE_FILE>1700@idl.terradue.int</LM_LICENSE_FILE>
               </environmentVariables>

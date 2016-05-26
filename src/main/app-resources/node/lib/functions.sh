@@ -5,7 +5,7 @@ SUCCESS=0
 # define error codes
 ERR_IDL_ENV=10
 ERR_DATA_STAGEIN=20
-
+ERR_IDL=30
 
 # define how to exit gracefully
 function cleanExit ()
@@ -16,6 +16,7 @@ function cleanExit ()
     ${SUCCESS}) msg="Processing successfully concluded";;
     ${ERR_IDL_ENV}) msg="Failed to create the IDL environment";;
     ${ERR_DATA_STAGE_IN}) msg="Failed to stage-in data";;
+    ${ERR_IDL}) msg="IDL execution error";;
     *) msg="Unknown error";;
   esac
 
@@ -44,7 +45,7 @@ function get_data() {
   [ -z ${zip_archive} ] && return ${ERR_DATA_STAGEIN}
 
   cd ${target}
-  unzip $( basename ${zip_archive} ) || ${ERR_DATA_STAGEIN}
+  unzip -qq $( basename ${zip_archive} ) || ${ERR_DATA_STAGEIN}
 
   cd - &> /dev/null
 
@@ -55,9 +56,11 @@ function main() {
   
   set_idl_env || return ${ERR_IDL_ENV}
 
+  cd ${TMP_DIR}
   # invoke IDL
-  idl -rt=/${_CIOP_APPLICATION_PATH}/node/bin/combine_v2.sav
-
+  idl -rt=${_CIOP_APPLICATION_PATH}/node/idl/combine_v2.sav 2> ${TMPDIR}/combine.log 
+ 
+  grep halted ${TMPDIR}/combine.log && return ${ERR_IDL}
 
   # publish result
   # ciop-publish -m <path_to_file>
