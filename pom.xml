@@ -229,11 +229,9 @@
           <provides>
             <provide>${project.artifactId}</provide>
           </provides>
-          <!--
-					<requires>
-						<require></require>
-					</requires>
-				-->
+          <requires>
+            <require>idl</require>
+          </requires>
         </configuration>
       </plugin>
     </plugins>
