@@ -39,8 +39,16 @@ function get_data() {
   local input=$1
   local target=$2
 
-  ciop-copy -O ${target} ${input} || return $ERR_DATA_STAGEIN
+  zip_archive="$( ciop-copy -f -U -O ${target} ${input} )"
+ 
+  [ -z ${zip_archive} ] && return ${ERR_DATA_STAGEIN}
 
+  cd ${target}
+  unzip $( basename ${zip_archive} ) || ${ERR_DATA_STAGEIN}
+
+  cd - &> /dev/null
+
+  rm -f ${zip_archive}
 }
 
 function main() {

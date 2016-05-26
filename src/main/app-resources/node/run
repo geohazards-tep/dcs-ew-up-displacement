@@ -6,6 +6,8 @@ source ${ciop_job_include}
 # source node functions
 source ${_CIOP_APPLICATION_PATH}/node/lib/functions.sh
 
+set -x
+
 export target=${TMPDIR}/input
 mkdir -p ${target}
 
@@ -17,6 +19,8 @@ do
 
   get_data ${inputfile} ${target} || exit $?
 done
+
+tree ${TMPDIR}
 
 main || exit $?
 

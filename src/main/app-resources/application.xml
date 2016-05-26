@@ -3,7 +3,11 @@
   <jobTemplates>
     <jobTemplate id="template">
       <streamingExecutable>/application/node/run</streamingExecutable>
-    </jobTemplate>
+<defaultParameters/>        
+<defaultJobconf>
+                <property id="ciop.job.max.tasks">1</property>
+        </defaultJobconf>
+</jobTemplate> 
   </jobTemplates>
     <workflow id="workflow" title="EW and Up component extraction" abstract="Sample service to combine the Asc and Desc measurement to extract the EW and Up component of Displacement.">
     <workflowVersion>1.0</workflowVersion>
