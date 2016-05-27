@@ -74,7 +74,7 @@ function scan_input() {
     mask="$( basename $( zipinfo -1 ${zip_archive} | grep mask | head -n 1 ))"
     vel="$( basename $( zipinfo -1 ${zip_archive} | grep vel | head -n 1 ))"
     x_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | head -n 1 )"
-    y_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | tail -n 2 )"
+    y_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | tail -n 1 )"
 
 cat << EOF > ${short_prefix}
 mask_coh${short_prefix} = '${mask}'
