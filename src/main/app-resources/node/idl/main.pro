@@ -7,8 +7,8 @@ pro main
 
 ; Define path
 pathgen='.'
-pathAsc   = './data/asc_T408'
-pathDesc  = './data/desc_T472'
+pathAsc   = './input/asc_T408'
+pathDesc  = './input/desc_T472'
 
 ; Define input files
 ;T408
