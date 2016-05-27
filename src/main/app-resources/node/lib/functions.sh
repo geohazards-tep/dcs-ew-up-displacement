@@ -112,9 +112,10 @@ function main() {
   cp ${_CIOP_APPLICATION_PATH}/node/idl/combine_v2.sav ${TMPDIR}
    
   # create .go file 
-  go_file=${TMPDIR}/combine_v2.go
-  create_go ${go_file}
-
+  #go_file=${TMPDIR}/combine_v2.go
+  #create_go ${go_file}
+  go_file=${TMPDIR}/combine_v2.sav
+  
   # invoke IDL
   idl -rt=${go_file} 2> ${TMPDIR}/combine.log 
 
