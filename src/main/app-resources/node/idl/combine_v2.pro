@@ -6,7 +6,7 @@
 ; and 1 desc LOS files 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-pro combine,pathgen,d_zz,d_ew,COH_COM,pathAsc=pathAsc,pathDesc=pathDesc,mask_cohA=mask_cohA,x_cohA=x_cohA,y_cohA=y_cohA,mask_velA=mask_velA,mask_cohD=mask_cohD,x_cohD=x_cohD,y_cohD=y_cohD,mask_velD=mask_velD,pac_x = pac_x, pac_y=pac_y
+pro main,pathgen,d_zz,d_ew,COH_COM,pathAsc=pathAsc,pathDesc=pathDesc,mask_cohA=mask_cohA,x_cohA=x_cohA,y_cohA=y_cohA,mask_velA=mask_velA,mask_cohD=mask_cohD,x_cohD=x_cohD,y_cohD=y_cohD,mask_velD=mask_velD,pac_x = pac_x, pac_y=pac_y
 
 if n_params() eq 0 then begin
   print,' *******************************************************************************************'
@@ -30,6 +30,8 @@ if n_params() eq 0 then begin
   print,' *******************************************************************************************'
   return
 endif
+pathGen = ''
+read,pathGen
 
   spawn,'mkdir '+pathgen+'/result'
 
@@ -326,9 +328,11 @@ endif
 
   if ~arg_present(pac_x) then begin
      
-     window,1,xs=dimx_cut,ys=dimy_cut,title='Select Reference Point'
-     tvscl,coh_com
-     rdpix,coh_com
+     ;window,1,xs=dimx_cut,ys=dimy_cut,title='Select Reference Point'
+     ;tvscl,coh_com
+     ;rdpix,coh_com
+     pac_x=''
+     pac_y=''
      read,'X coordinate: ' ,pac_x
      read,'Y coordinate: ' ,pac_y
 

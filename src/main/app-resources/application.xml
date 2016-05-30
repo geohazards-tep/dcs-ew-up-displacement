@@ -3,7 +3,10 @@
   <jobTemplates>
     <jobTemplate id="template">
       <streamingExecutable>/application/node/run</streamingExecutable>
-<defaultParameters/>        
+<defaultParameters>        
+  <parameter id="par1" title="Parameter 1" abstract="Parameter 1" scope="runtime">680</parameter>
+  <parameter id="par2" title="Parameter 2" abstract="Parameter 2" scope="runtime">220</parameter>
+</defaultParameters>
 <defaultJobconf>
                 <property id="ciop.job.max.tasks">1</property>
         </defaultJobconf>
