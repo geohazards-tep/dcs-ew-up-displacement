@@ -32,7 +32,6 @@ trap cleanExit EXIT
 function set_idl_env() {
 
   export LM_LICENSE_FILE=1700@idl.terradue.int
-    
 
 }
 
@@ -128,8 +127,8 @@ function main() {
   idl_file=${TMPDIR}/combine_v2.sav
   
   # invoke IDL
-  idl -rt=${idl_file} < ${go_file} 2> ${TMPDIR}/combine.log 
-
+  idl -rt=${idl_file} -IDL_DEVICE Z < ${go_file} 2> ${TMPDIR}/combine.log 
+  
   # publish log
   ciop-publish -m ${TMPDIR}/combine.log
 

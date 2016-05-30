@@ -7,10 +7,6 @@ pro main
 
 ; Define path
 pathgen='.'
-<<<<<<< HEAD
-pathAsc   = './asc_T408'
-pathDesc  = './desc_T472'
-=======
 pathAsc   = './input/asc_T408'
 pathDesc  = './input/desc_T472'
 
