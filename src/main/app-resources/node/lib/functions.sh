@@ -15,7 +15,7 @@ function cleanExit ()
   case "${retval}" in
     ${SUCCESS}) msg="Processing successfully concluded";;
     ${ERR_IDL_ENV}) msg="Failed to create the IDL environment";;
-    ${ERR_DATA_STAGE_IN}) msg="Failed to stage-in data";;
+    ${ERR_DATA_STAGEIN}) msg="Failed to stage-in data";;
     ${ERR_IDL}) msg="IDL execution error";;
     *) msg="Unknown error";;
   esac
@@ -42,14 +42,8 @@ function get_data() {
 
   zip_archive="$( ciop-copy -f -U -O ${target} ${input} )"
  
-  #[ ! -z ${zip_archive} ] && return ${ERR_DATA_STAGEIN}
+  [ -z "${zip_archive}" ] && return ${ERR_DATA_STAGEIN} || return 0
 
-  #cd ${target}
-  #unzip -qq $( basename ${zip_archive} ) || ${ERR_DATA_STAGEIN}
-
-  #cd - &> /dev/null
-
-  #rm -f ${zip_archive}
 }
 
 function scan_input() {
@@ -61,38 +55,27 @@ function scan_input() {
   for zip_archive in $( find ${input_path} -name "*.zip" )
   do 
     unzip -qq $( basename ${zip_archive} )
-#    [ "$( basename ${zip_archive} | cut -c 1-4 )" == "asc_" ] && {
-#      prefix="Asc"
-#      short_prefix="A"
-#      echo ${zip_archive} | sed "s/\.zip//" 
-#    } || {
-#      prefix="Desc"
-#      short_prefix="D"
-#      echo ${zip_archive} | sed "s/\.zip//" 
-#    }
-    echo ${zip_archive} | sed "s/\.zip//"
+    [ "$( basename ${zip_archive} | cut -c 1-4 )" == "asc_" ] && {
+      short_prefix="A"
+    } || {
+      short_prefix="D"
+    }
+    echo ${zip_archive} | sed "s/\.zip//" > ${short_prefix}
     mask="$( basename $( zipinfo -1 ${zip_archive} | grep mask | head -n 1 ))"
-    vel="$( basename $( zipinfo -1 ${zip_archive} | grep vel | head -n 1 ))"
-    x_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | head -n 1 )"
-    y_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | tail -n 1 )"
+    vel="$( basename $( zipinfo -1 ${zip_archive} | grep vel | head -n 1 ))" 
+    x_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | head -n 1 )" 
+    y_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | tail -n 1 )" 
  
-    echo ${mask}
-    echo ${x_coh}l
-    echo ${y_coh}l
-    echo ${vel}
+    echo ${mask} >> ${short_prefix}
+    echo ${x_coh}l >> ${short_prefix}
+    echo ${y_coh}l >> ${short_prefix}
+    echo ${vel} >> ${short_prefix}
 
-#cat << EOF > ${short_prefix}
-#mask_coh${short_prefix} = '${mask}'
-#x_coh${short_prefix}    = ${x_coh}l
-#y_coh${short_prefix}    = ${y_coh}l
-#mask_vel${short_prefix} = '${vel}'
-#EOF
-#    rm -f ${zip_archive}
   done
 
-#  cat A 
-#  cat D
-#  rm -f A D
+  cat A 
+  cat D
+  rm -f A D
 }
 
 function create_go() {
@@ -127,7 +110,7 @@ function main() {
   idl_file=${TMPDIR}/combine_v2.sav
   
   # invoke IDL
-  idl -rt=${idl_file} -IDL_DEVICE Z < ${go_file} 2> ${TMPDIR}/combine.log 
+  idl -rt=${idl_file} -IDL_DEVICE Z < ${go_file} &> ${TMPDIR}/combine.log 
   
   # publish log
   ciop-publish -m ${TMPDIR}/combine.log
@@ -136,7 +119,7 @@ function main() {
   grep halted ${TMPDIR}/combine.log && return ${ERR_IDL}
 
   # publish result
-  #ciop-publish -m ${TMPDIR}/ ??
+  ciop-publish -m ${TMPDIR}/result 
 
 
 }

@@ -6,21 +6,21 @@
 ; and 1 desc LOS files 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-pro main,pathgen,d_zz,d_ew,COH_COM,pathAsc=pathAsc,pathDesc=pathDesc,mask_cohA=mask_cohA,x_cohA=x_cohA,y_cohA=y_cohA,mask_velA=mask_velA,mask_cohD=mask_cohD,x_cohD=x_cohD,y_cohD=y_cohD,mask_velD=mask_velD,pac_x = pac_x, pac_y=pac_y
+pro main,pathGen,d_zz,d_ew,COH_COM,pathAsc=pathAsc,pathDesc=pathDesc,mask_cohA=mask_cohA,x_cohA=x_cohA,y_cohA=y_cohA,mask_velA=mask_velA,mask_cohD=mask_cohD,x_cohD=x_cohD,y_cohD=y_cohD,mask_velD=mask_velD,pac_x = pac_x, pac_y=pac_y
 
 if n_params() eq 0 then begin
   print,' *******************************************************************************************'
   print,' Usage'
   print,''
   print,' Input:'
-  print,' pathgen: working directory'
+  print,' pathGen: working directory'
   print,''
   print,' Output:'
   print,' d_zz: vertical component of displacement'
   print,' d_ew: East-West component of displacement'
   print,' COH_COM: common coherence mask'
   print,''
-  print,' Paramters:'
+  print,' Input Paramters:'
   print,' pathAsc, pathDesc: location of asc and desc input files'
   print,' mask_cohA, mask_cohD: coherence mask file name (asc/desc)'
   print,' x_cohA, x_cohD: X size of input files (asc/desc)'
@@ -28,23 +28,83 @@ if n_params() eq 0 then begin
   print,' mask_velA, mask_velD: input velocity file name (asc/desc)'
   print,' pac_x, pac_y: reference point coordinates (in samples)'
   print,' *******************************************************************************************'
-  return
+;  return
 endif
-pathGen = ''
-read,pathGen
 
-  spawn,'mkdir '+pathgen+'/result'
+  if ~arg_present(pathGen) then begin
+     pathGen = ''
+     print,'Insert the working directory'
+     read,'    ',pathGen
+     print,pathGen
+  endif
 
   if ~arg_present(pathAsc) then begin
      pathasc=''
      print,'Insert the full path for Ascending data'
      read,'    ',pathasc
+     print,pathAsc
+  endif
+
+  ;pathGen = strsplit(pathAsc,'/',/extract)
+  ;pathGen = '/'+strjoin(pathGen(0:n_elements(pathGen)-3),'/')
+  spawn,'mkdir '+pathGen+'/result/',/sh,msg1,msgerr
+  print,msg1
+  print,msgerr
+
+  if ~arg_present(mask_cohA) then begin
+     mask_cohA=''
+     print,'Insert the Ascending Coherence Mask'
+     read,'    ',mask_cohA
+     print,mask_cohA
+  endif
+
+  if ~arg_present(x_cohA) then begin
+     print,'Insert matrix size'
+     x_cohA = 0l
+     y_cohA = 0l
+     read,'X size: ',x_cohA
+     read,'Y size: ',y_cohA
+     print,x_cohA,y_cohA
+  endif
+
+  if ~arg_present(mask_velA) then begin
+     mask_velA=''
+     print,''
+     print,'Insert the Ascending Velocity'
+     read,'    ',mask_velA
+     print,mask_velA
   endif
 
   if ~arg_present(pathDesc) then begin
      pathdesc=''
      print,'Insert the full path for Descending data'
      read,'    ',pathdesc
+     print,pathDesc
+  endif
+
+  if ~arg_present(mask_cohD) then begin
+     mask_cohD=''
+     print,''
+     print,'Insert the Descending Coherence Mask'
+     read,'    ',mask_cohD
+     print,mask_cohD
+  endif
+
+  if ~arg_present(x_cohD) then begin
+     print,'Insert matrix size'
+     x_cohD = 0l
+     y_cohD = 0l
+     read,'X size: ',x_cohD
+     read,'Y size: ',y_cohD
+     print,x_cohD,y_cohD
+  endif
+
+  if ~arg_present(mask_velD) then begin
+     mask_velD=''
+     print,''
+     print,'Insert the Descending Velocity'
+     read,'    ',mask_velD
+     print,mask_velD
   endif
 
   restore,pathasc+'/'+'ParDem.sav'
@@ -145,18 +205,6 @@ read,pathGen
 ; Asc Mask reading
 ;------------------------------------------
 
-  if ~arg_present(mask_cohA) then begin
-     mask_cohA=''
-     print,'Insert the Ascending Coherence Mask'
-     read,'    ',mask_cohA
-  endif
-
-  if ~arg_present(x_cohA) then begin
-     print,'Insert matrix size'
-     read,'X size: ',x_cohA
-     read,'Y size: ',y_cohA
-  endif
-
   openr,1,pathasc+'/'+mask_cohA
   coh_A=fltarr(x_cohA,y_cohA)
   readu,1,coh_A
@@ -174,13 +222,6 @@ read,pathGen
 ;------------------------------------------
 ; Asc Velocity reading
 ;------------------------------------------
-
-  if ~arg_present(mask_velA) then begin
-     mask_velA=''
-     print,''
-     print,'Insert the Ascending Velocity'
-     read,'    ',mask_velA
-  endif
 
   openr,1,pathasc+'/'+mask_velA
   vel_A=fltarr(x_cohA,y_cohA)
@@ -228,24 +269,6 @@ read,pathGen
 ; Desc Mask reading
 ;------------------------------------------
 
-  print,''
-  print,'Reading Descending Mask...'
-
-  if ~arg_present(mask_cohD) then begin
-
-     mask_cohD=''
-
-     print,''
-     print,'Insert the Descending Coherence Mask'
-     read,'    ',mask_cohD
-  endif
-
-  if ~arg_present(x_cohD) then begin
-     print,'Insert matrix size'
-     read,'X size: ',x_cohD
-     read,'Y size: ',y_cohD
-  endif
-
   openr,1,pathdesc+'/'+mask_cohD
   coh_D=fltarr(x_cohD,y_cohD)
   readu,1,coh_D
@@ -266,13 +289,6 @@ read,pathGen
 
   print,''
   print,'Reading Descending Velocity...'
-
-  if ~arg_present(mask_velD) then begin
-     mask_velD=''
-     print,''
-     print,'Insert the Descending Velocity'
-     read,'    ',mask_velD
-  endif
 
   openr,1,pathdesc+'/'+mask_velD
   vel_D=fltarr(x_cohD,y_cohD)
@@ -380,20 +396,28 @@ read,pathGen
   print,' Saving results'
   print,'*******************************************'
 
-openw,1,pathgen+'/result/'+'Up_GEO_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'dat'
+openw,1,pathgen+'/result/'+'Up_GEO_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'.dat'
 writeu,1,d_zz & close,1
 
-openw,1,pathgen+'/result/'+'EW_GEO_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'dat'
+openw,1,pathgen+'/result/'+'EW_GEO_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'.dat'
 writeu,1,d_ew & close,1
 
-openw,1,pathgen+'/result/'+'MaskCom_GEO_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'dat'
+openw,1,pathgen+'/result/'+'MaskCom_GEO_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'.dat'
 writeu,1,COH_COM & close,1
 
-openw,1,pathgen+'/result/'+'VelCutDesc_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'dat'
+openw,1,pathgen+'/result/'+'VelCutDesc_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'.dat'
 writeu,1,vel_cutD & close,1
 
-openw,1,pathgen+'/result/'+'VelCutAsc_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'dat'
+openw,1,pathgen+'/result/'+'VelCutAsc_'+strcompress(dimx_cut,/remove_all)+'x'+strcompress(dimy_cut,/remove_all)+'.dat'
 writeu,1,vel_cutA & close,1
+
+spawn,'ls -ltr '+pathGen+'/result',/sh,msg1,msgerr
+print,msg1
+print,msgerr
+
+print,'*******************************************'
+print,' Program terminated successfully'
+print,'*******************************************'
 
 
 end
