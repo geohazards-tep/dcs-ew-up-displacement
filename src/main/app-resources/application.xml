@@ -4,8 +4,8 @@
     <jobTemplate id="template">
       <streamingExecutable>/application/node/run</streamingExecutable>
 <defaultParameters>        
-  <parameter id="par1" title="Parameter 1" abstract="Parameter 1" scope="runtime">680</parameter>
-  <parameter id="par2" title="Parameter 2" abstract="Parameter 2" scope="runtime">220</parameter>
+  <parameter id="par1" title="Parameter 1" abstract="Parameter 1" scope="runtime" maxOccurs="1">680</parameter>
+  <parameter id="par2" title="Parameter 2" abstract="Parameter 2" scope="runtime" maxOccurs="1">220</parameter>
 </defaultParameters>
 <defaultJobconf>
                 <property id="ciop.job.max.tasks">1</property>
@@ -17,7 +17,7 @@
     <node id="node">
       <job id="template"/>
       <sources>
-        <source refid="string:list">file:///application/data/asc_T408.zip,file:///application/data/desc_T472.zip</source>
+        <source id="inputdata" scope="runtime" title="References to ascedning and descending data" abstract="References to ascending and descending data as URLs e.g.: file:///application/data/asc_T408.zip,file:///application/data/desc_T472.zip " refid="string:list">file:///application/data/asc_T408.zip,file:///application/data/desc_T472.zip</source>
       </sources>
     </node>
   </workflow>
