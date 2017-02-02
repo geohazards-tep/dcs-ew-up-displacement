@@ -17,7 +17,7 @@
     <node id="node">
       <job id="template"/>
       <sources>
-        <source id="inputdata" scope="runtime" title="References to ascedning and descending data" abstract="References to ascending and descending data as URLs e.g.: file:///application/data/asc_T408.zip,file:///application/data/desc_T472.zip " refid="string:list">file:///application/data/asc_T408.zip,file:///application/data/desc_T472.zip</source>
+        <source id="inputdata" scope="runtime" title="References to ascedning and descending data" abstract="References to ascending and descending data as URLs e.g.: file:///application/data/asc_T408.zip,file:///application/data/desc_T472.zip " refid="string:list">file:///application/data/asc_T408.zip,file:///application/data/desc_T472.zip,file:///application/data/asc_T365.zip,file:///application/data/desc_T200.zip</source>
       </sources>
     </node>
   </workflow>

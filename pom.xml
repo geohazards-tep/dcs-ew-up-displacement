@@ -177,7 +177,7 @@ xml.properties() {
                 <argument>-IDL_DEVICE</argument>
                 <argument>Z</argument>
                 <argument>-e</argument>
-                <argument>@c_combine_v2.go</argument>
+                <argument>@c_combine_ECEO.go</argument>
               </arguments>
             </configuration>
           </execution>

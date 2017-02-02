@@ -55,27 +55,30 @@ function scan_input() {
   for zip_archive in $( find ${input_path} -name "*.zip" )
   do 
     unzip -qq $( basename ${zip_archive} )
-    [ "$( basename ${zip_archive} | cut -c 1-4 )" == "asc_" ] && {
-      short_prefix="A"
-    } || {
-      short_prefix="D"
-    }
-    echo ${zip_archive} | sed "s/\.zip//" > ${short_prefix}
+#    [ "$( basename ${zip_archive} | cut -c 1-4 )" == "asc_" ] && {
+#      short_prefix="A"
+#    } || {
+#      short_prefix="D"
+#    }
+    short_prefix=$( echo ${zip_archive} | sed "s/\.zip//")
     mask="$( basename $( zipinfo -1 ${zip_archive} | grep mask | head -n 1 ))"
     vel="$( basename $( zipinfo -1 ${zip_archive} | grep vel | head -n 1 ))" 
-    x_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | head -n 1 )" 
-    y_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | tail -n 1 )" 
+#    x_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | head -n 1 )" 
+#    y_coh="$( echo ${mask} | sed 's/mask_GEO_//' | sed 's/\.dat//' | tr "x" "\n" | tail -n 1 )" 
  
-    echo ${mask} >> ${short_prefix}
-    echo ${x_coh}l >> ${short_prefix}
-    echo ${y_coh}l >> ${short_prefix}
-    echo ${vel} >> ${short_prefix}
+    echo ${short_prefix} >> ${TMPDIR}/lista_ela
+    echo ${short_prefix}/${mask} >> ${TMPDIR}/lista_m
+    echo ${short_prefix}/${vel} >> ${TMPDIR}/lista_v
 
   done
 
-  cat A 
-  cat D
-  rm -f A D
+#  cat A 
+#  cat D
+#  rm -f A D
+ciop-publish -m ${TMPDIR}/lista_ela
+ciop-publish -m ${TMPDIR}/lista_m
+ciop-publish -m ${TMPDIR}/lista_v
+
 }
 
 function create_go() {
@@ -85,7 +88,7 @@ function create_go() {
   local par2=$3 
 
   echo "." > ${go}
-  scan_input ${TMPDIR}/input >> ${go}
+#  scan_input ${TMPDIR}/input >> ${go}
   echo ${par1} >> ${go}
   echo ${par2} >> ${go}
 
@@ -102,12 +105,13 @@ function main() {
   cd ${TMP_DIR}
 
   # copy .sav 
-  cp ${_CIOP_APPLICATION_PATH}/node/idl/combine_v2.sav ${TMPDIR}
+  cp ${_CIOP_APPLICATION_PATH}/node/idl/combine_ECEO.sav ${TMPDIR}
    
   # create .go file 
   go_file=${TMPDIR}/inputparams.par
   create_go ${go_file} ${par1} ${par2}
-  idl_file=${TMPDIR}/combine_v2.sav
+  scan_input ${TMPDIR}/input
+  idl_file=${TMPDIR}/combine_ECEO.sav
   
   # invoke IDL
   idl -rt=${idl_file} -IDL_DEVICE Z < ${go_file} &> ${TMPDIR}/combine.log 
